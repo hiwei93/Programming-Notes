@@ -194,6 +194,3 @@ catch (Exception e) {
 }
 ```
 > Session引发异常则回滚。
-
-# 三、MyBatis
-##1. 

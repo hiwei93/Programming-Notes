@@ -177,7 +177,7 @@ OutputStreamReader writer = new OutputStreamReader(new FileOutputStream(), "utf-
 2. readObject();
 
 ### 5. transient关键字
-1. transient关键字修饰的参数，不会惊醒JVM默认的序列化；
+1. transient关键字修饰的参数，不会进行JVM默认的序列化；
 2. 可以自己写方法实现序列化：
 参考ArrayList源码：
 ``` java

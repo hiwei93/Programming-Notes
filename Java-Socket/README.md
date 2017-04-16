@@ -30,11 +30,11 @@
 用于表示网络上的硬件资源，表示IP地址的相关信息。
 ### 1. 获取InetAddress对象实例
 1. 获取本机InetAddress实例
-```
+``` java
 InetAddress address = InetAddress.getLocalHost();
 ```
 2. 根据机器名或者IP地址获取InetAddress实例
-```
+``` java
 InetAddress address = InetAddress.getByName(IP/HostName);
 ```
 
@@ -48,7 +48,7 @@ InetAddress address = InetAddress.getByName(IP/HostName);
 2. URL组成：协议名+资源名称，中间用冒号隔开；
 3. java.net包中，提供了URL类来表示URL。
 ### 1. URL操作
-```
+``` java
 //创建一个URL实例
 URL imooc=new URL("http://www.imooc.com");
 //?后面表示参数，#后面表示锚点
@@ -66,7 +66,7 @@ System.out.println("查询字符串："+url.getQuery());
 ### 2. 使用URL读取网页内容
 1. 通过URL对象的openStream()方法可以得到指定资源的输入流；
 2. 通过输入流可以读取、访问网络上的数据。
-```
+``` java
 //创建一个URL实例
 URL url = new URL("http://www.baidu.com");
 //通过URL的openStream方法获取URL对象所表示的资源的字节输入流

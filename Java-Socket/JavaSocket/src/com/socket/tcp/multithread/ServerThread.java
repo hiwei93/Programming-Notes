@@ -41,7 +41,6 @@ public class ServerThread extends Thread {
 			// 4. 响应客户端的请求
 			response(socket);
 
-			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -55,6 +54,9 @@ public class ServerThread extends Thread {
 				}
 				if (inputStream != null) {
 					inputStream.close();
+				}
+				if (socket != null){
+					socket.close();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

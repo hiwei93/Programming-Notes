@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * 基于TCP协议的Socket通信，实现用户的登录
+ * 基于TCP协议的Socket通信，实现对象的传输
  * 服务器端
  */
 public class TCPServerThread {

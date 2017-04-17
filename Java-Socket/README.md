@@ -172,6 +172,15 @@ ObjectOutputStream objectOutput = new ObjectOutputStream(OutputStream);
 ``` java
 objectOutput.writeObject(user);
 ```
+使用ObjectInputStream对象反序列化流，接收对象
+``` java
+ObjectInputStream objectInput = new new ObjectInputStream(InputStream);
+```
+反序列化
+``` java
+User user = (User) objectInput.readObject();
+```
+> 注：被序列化对象需要实现Serializable接口，否则将报错。
 
 4. Socket编程传递文件
 ``` java

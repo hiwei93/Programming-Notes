@@ -6,13 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
- * 基于TCP协议的Socket通信，实现用户的登录
+ * 基于TCP协议的Socket通信，实现对象的传输
  * 客户端
  */
 public class TCPClientThread {

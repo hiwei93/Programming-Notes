@@ -7,17 +7,20 @@
 - 进程是资源的载体，也是线程的载体；
 
 ### 2. 线程
-1. 理解线程
+理解线程
 - 线程是系统中最小的执行单元；
 - 统一进程汇总有多个线程；
 - 线程共享进程的资源。
 
 ### 3. 线程的生命周期
-![Alt text](./JavaMultithread-2.png)
+![Thread.State](./JavaMultithread-4.png)
+
+![生命周期及状态](./JavaMultithread-5.png)
+
 
 ## 二、Java多线程
 ### 1. Java实现多线程
-> 继承java.lang.**Thread**类 或 实现java.lang.**Runnable**接口。
+> 继承java.lang.**Thread**类 或 实现java.lang.**Runnable**接口；
 > 重写**run()**方法。
 
 1. 继承Thread类
@@ -53,13 +56,19 @@ thread.start();
 > 启动一个线程是调用 start()方法，而不是run()方法；
 > 一般实现多线程以实现Runnable接口为主；
 
-### 2. Thread常用方法
+### 2. Thread与Runnable的对比
+1. Runnable方式可以避免Thread方式由于Java单继承带来的缺陷；
+2. Runnable可以创建多个Thread实例（被多个线程共享），适合于多个线程处理同一资源的情况；
+3. Runnable方式可以使代码被多个线程共享，增加代码的健壮性；
+4. 线程池只能放入实现Runable或callable类线程，不能直接放入继承Thread的类。
+
+### 3. Thread常用方法
 1. void start()：启动线程；
 2. static void sleep()：线程休眠；
 
 ![Alt text](./JavaMultithread-1.png)
 
-### 3. 其他方法
+### 4. 其他方法
 #### 1. extends Thread类
 1. getName()：获得当前线程的名字；
 2. thread.setName()：设置制定线程的名字；
@@ -70,14 +79,14 @@ thread.start();
  - Thread构造器，接受Runnable实现累的时候，同时传入名称；
  - thread.setName();
 
-### 4. Volatile 关键字
+### 5. Volatile 关键字
 保证了线程可以正确的读取其他线程写入的值；
 
-### 5. yield 方法
+### 6. yield 方法
 static void yield()：当前运行线程释放处理器资源
 > yield让出 CPU 执行权给同等级的线程，如果没有相同级别的线程在等待 CPU 的执行权，则该线程继续执行。
 
-### join 方法
+### 7. join 方法
 void join()：所有线程等待调用join方法的线程运行完成后再运行；
 > 应用在在许多结束程序的地方。
 
@@ -150,13 +159,7 @@ public class ThreadDemo implements Runnable {
 
 > wait/notify必须存在于synchronized块中。
 
-## 四、Thread与Runnable的对比
-1. Runnable方式可以避免Thread方式由于Java单继承带来的缺陷；
-2. Runnable可以创建多个Thread实例（被多个线程共享），适合于多个线程处理同一资源的情况；
-3. Runnable方式可以使代码被多个线程共享，增加代码的健壮性；
-4. 线程池只能放入实现Runable或callable类线程，不能直接放入继承Thread的类。
-
-## 五、守护线程
+## 四、守护线程
 ### 1. 线程分类
 线程有两类：
 #### 1. 用户线程
@@ -168,7 +171,7 @@ public class ThreadDemo implements Runnable {
 2. 应用：数据库连接翅中的监测线程、JVM虚拟机启动后的监测线程。
 
 ### 2. 守护线程的使用
-#### 1. 设置守护线程
+#### 设置守护线程
 调用Thread类的setDaemon(true)设置当前线程为守护线程
 ``` java
 thread.setDaemon(true);
@@ -179,18 +182,92 @@ thread.setDaemon(true);
 > 2. 守护线程中产生的新线程也是守护线程；
 > 3. 不是所有的任务都可以分配给守护线程来执行，如读写操作或计算逻辑。
 
-### 3. jstack生成线程快照
-#### 1. jstack介绍
+## 五. jstack生成线程快照
+### 1. jstack介绍
 1. jstack的位置：在java jdk的bin目录下
 2. 作用
 生成JVM当前时刻线程的快照
 3. 目的
 宝珠定位程序问题出现的原因，如长时间停顿、CPU占用过高等
 
-#### 2. 使用jstack
+### 2. 使用jstack
 dos窗口下
 ![Alt text](./JavaMultithread-3.png)
 
-## 六、其他线程知识
-1. [Java多线程-新特性-线程池](http://www.cnblogs.com/linjiqin/p/3213692.html)
-2. [Java线程池详细介绍](http://www.codeceo.com/article/java-thread-pool-intro.html#0-qzone-1-49223-d020d2d2a4e8d1a374a433f596ad1440)
+## 六、线程池
+参考极客学院WiKi：[并发新特性—Executor 框架与线程池](http://wiki.jikexueyuan.com/project/java-concurrency/executor.html)
+依赖于Executor框架
+### 1. 创建线程池
+Executors 提供了一系列工厂方法用于创先线程池，返回的线程池都实现了 ExecutorService 接口。
+| 方法      | 介绍 |
+| :-------- |:--------|
+| public static ExecutorService newFixedThreadPool(int nThreads)|   创建一个可重用固定线程数的线程池|
+|public static ExecutorService newCachedThreadPool()|创建一个可根据需要创建新线程的线程池|
+|public static ExecutorService newSingleThreadExecutor()|创建一个单线程化的Executor|
+|public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize)| 创建一个支持定时及周期性的任务执行的线程池|
+
+### 2. 自定义线程池
+用 ThreadPoolExecutor 类创建自定义线程池，它有多个构造方法来创建线程池
+``` java
+public ThreadPoolExecutor (int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,BlockingQueue<Runnable> workQueue)
+```
+- corePoolSize：线程池中所保存的核心线程数，包括空闲线程。
+- maximumPoolSize：池中允许的最大线程数。
+- keepAliveTime：线程池中的空闲线程所能持续的最长时间。
+- unit：持续时间的单位。
+- workQueue：任务执行前保存任务的队列，仅保存由 execute 方法提交的 Runnable 任务。
+
+## 七、Lock锁
+### 1. 认识Lock接口
+1. 显式的互斥锁，在java.util.concurrent.locks中
+2. Lock接口的三个实现类
+- ReentrantLock：重入锁
+- ReetrantReadWriteLock.ReadLock：读锁
+- ReetrantReadWriteLock.WriteLock：写锁
+
+### 2. 使用Lock锁
+#### 1. 一般形式
+``` java
+Lock lock = new ReentrantLock();//默认使用非公平锁，如果要使用公平锁，需要传入参数true  
+........  
+// lock.lockInterruptibly();//获取响应中断锁
+lock.lock();  // 加锁
+try {  
+     //更新对象的状态 
+	 //如果有return语句，放在这里  
+} catch(Exception e) {
+	... ...
+} finally {  
+       lock.unlock();        //锁必须在finally块中释放  
+}
+```
+> 注：
+> 1. 把互斥区放在 try 语句块内；
+> 2. return 语句必须放在 try 字句中；
+> 3. 在 finally 语句块中释放锁
+
+#### 2. 实现同步
+```
+private Lock lock = new ReentrantLock(); 
+private Condition condition = lock.newCondition(); //产生一个Condition对象  
+
+lock.lock();  
+try{  
+	condition.await() ;  // 挂起
+    ... ...
+    condition.signal();  // 唤醒
+}catch(InterruptedException e){   
+    ... ...
+}finally{  
+	lock.unlock();  
+}  
+```
+
+### 3. 与Synchronize关键字的区别
+1. Lock 有比 synchronized 更精确的线程语义和更好的性能；
+2. Lock 必须被显式地创建、锁定和释放
+3. Lock提供多种加锁方案，lock 阻塞式, trylock 无阻塞式, lockInterruptily 可打断式， 还有trylock的带超时时间版本。
+
+## 八、其他参考
+1. [Java线程池详细介绍](http://www.codeceo.com/article/java-thread-pool-intro.html#0-qzone-1-49223-d020d2d2a4e8d1a374a433f596ad1440)
+2. [java Future用法和意义一句话击破](https://www.oschina.net/question/54100_83333)

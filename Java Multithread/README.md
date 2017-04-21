@@ -247,7 +247,7 @@ try {
 > 3. 在 finally 语句块中释放锁
 
 #### 2. 实现同步
-```
+``` java
 private Lock lock = new ReentrantLock(); 
 private Condition condition = lock.newCondition(); //产生一个Condition对象  
 

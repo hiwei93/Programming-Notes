@@ -195,15 +195,17 @@ dos窗口下
 ![Alt text](./JavaMultithread-3.png)
 
 ## 六、线程池
-参考极客学院WiKi：[并发新特性—Executor 框架与线程池](http://wiki.jikexueyuan.com/project/java-concurrency/executor.html)
-依赖于Executor框架
+> 参考极客学院WiKi：[并发新特性—Executor 框架与线程池](http://wiki.jikexueyuan.com/project/java-concurrency/executor.html)
+
+线程池的实现与操作依赖于Executor框架
 ### 1. 创建线程池
 Executors 提供了一系列工厂方法用于创先线程池，返回的线程池都实现了 ExecutorService 接口。
+
 | 方法                      | 介绍                      |
 |:--------------------------|:-------------------------|
-| public static ExecutorService newFixedThreadPool(int nThreads)|   创建一个可重用固定线程数的线程池|
-|public static ExecutorService newCachedThreadPool()|创建一个可根据需要创建新线程的线程池|
-|public static ExecutorService newSingleThreadExecutor()|创建一个单线程化的Executor|
+| public static ExecutorService newFixedThreadPool(int nThreads)| 创建一个可重用固定线程数的线程池|
+|public static ExecutorService newCachedThreadPool() |  创建一个可根据需要创建新线程的线程池    |
+|public static ExecutorService newSingleThreadExecutor()|   创建一个单线程化的Executor       |
 |public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize)| 创建一个支持定时及周期性的任务执行的线程池|
 
 ### 2. 自定义线程池

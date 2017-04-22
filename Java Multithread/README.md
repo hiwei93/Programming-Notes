@@ -199,8 +199,8 @@ dos窗口下
 依赖于Executor框架
 ### 1. 创建线程池
 Executors 提供了一系列工厂方法用于创先线程池，返回的线程池都实现了 ExecutorService 接口。
-| 方法      | 介绍 |
-| :-------- |:--------|
+| 方法                      | 介绍                      |
+|:--------------------------|:-------------------------|
 | public static ExecutorService newFixedThreadPool(int nThreads)|   创建一个可重用固定线程数的线程池|
 |public static ExecutorService newCachedThreadPool()|创建一个可根据需要创建新线程的线程池|
 |public static ExecutorService newSingleThreadExecutor()|创建一个单线程化的Executor|
@@ -271,3 +271,4 @@ try{
 ## 八、其他参考
 1. [Java线程池详细介绍](http://www.codeceo.com/article/java-thread-pool-intro.html#0-qzone-1-49223-d020d2d2a4e8d1a374a433f596ad1440)
 2. [java Future用法和意义一句话击破](https://www.oschina.net/question/54100_83333)
+3. [java多线程之生产者消费者经典问题](http://blog.csdn.net/thinkpadshi/article/details/8163751)

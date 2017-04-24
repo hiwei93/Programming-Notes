@@ -136,7 +136,7 @@ is.close();
 #### 2. UDP编程
 1. UDP进行数据传输是首先需要将要传输的数据定义成数据报（Datagram），在数据报中指明数据索要到达的Socket（主机地址和端口号），然后再将数据报发出去。
 2. 相关操作类：
-- DatagramPacket：比搜啊会数据报包；
+- DatagramPacket：表示数据报包；
 - DatagramSocket：进行端到端通信的类。
 
 #### 3. 实现步骤

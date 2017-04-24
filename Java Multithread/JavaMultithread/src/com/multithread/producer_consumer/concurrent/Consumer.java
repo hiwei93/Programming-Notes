@@ -1,5 +1,8 @@
 package com.multithread.producer_consumer.concurrent;
 
+/**
+ * 消费者：实现了Runnable接口
+ */
 public class Consumer implements Runnable {
 	private Warehouse warehouse;
 	

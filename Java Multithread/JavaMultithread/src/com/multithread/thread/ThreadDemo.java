@@ -1,5 +1,8 @@
 package com.multithread.thread;
 
+/**
+ * 继承Thread实现线程
+ */
 public class ThreadDemo {
 	
 	public static void main(String[] args) {

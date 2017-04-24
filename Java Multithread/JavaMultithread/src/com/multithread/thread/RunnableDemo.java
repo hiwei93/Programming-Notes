@@ -1,5 +1,8 @@
 package com.multithread.thread;
 
+/**
+ * 实现Runnable接口实现线程操作
+ */
 public class RunnableDemo {
 	
 	public static void main(String[] args) {

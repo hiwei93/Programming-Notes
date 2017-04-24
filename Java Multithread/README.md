@@ -219,6 +219,40 @@ public ThreadPoolExecutor (int corePoolSize, int maximumPoolSize, long keepAlive
 - unit：持续时间的单位。
 - workQueue：任务执行前保存任务的队列，仅保存由 execute 方法提交的 Runnable 任务。
 
+### 3. 线程池执行Runnable
+1. 通过 Executors 的以上四个静态工厂方法获得 ExecutorService 实例，如
+``` java
+ExecutorService executorService = Executors.newCachedThreadPool();   
+// ExecutorService executorService = Executors.newFixedThreadPool(5);  
+// ExecutorService executorService = Executors.newSingleThreadExecutor()
+```
+
+2.   调用execute(Runnable command)方法
+``` java
+executorService.execute(new RunnableTast());
+```
+> RunnableTast需要实现Runnable接口
+
+3. 关闭线程池
+``` java
+executorService.shutdown();
+```
+>  调用shutdown()方法后，ExecutorService 停止接受任何新的任务且等待已经提交的任务执行完成(已经提交的任务会分两类：一类是已经在执行的，另一类是还没有开始执行的)，当所有已经提交的任务执行完毕后将会关闭 ExecutorService。
+
+### 4. 线程池执行Callable
+> Callable 接口类似于 Runnable，但是 Runnable 任务没有返回值，而 Callable 任务有返回值。
+
+1. 调用submit(Callable<T> task)方法执行Callable
+``` java
+Future<String> future = executorService.execute(new CallableTast());
+```
+> CallableTast需要实现`Callable<T>`接口
+
+2. Future对象
+-  Future 表示异步计算的结果。它提供了检查计算是否完成的方法，以等待计算的完成，并获取计算的结果
+- Future.isDone()：判断Future是否完成了返回；
+- Future.get()：获取返回值
+
 ## 七、Lock锁
 ### 1. 认识Lock接口
 1. 显式的互斥锁，在java.util.concurrent.locks中

@@ -40,10 +40,10 @@ public class UDPServer {
 			InetAddress address = datagramPacket.getAddress();
 			int port = datagramPacket.getPort();
 			byte[] responseData = "欢迎你！".getBytes();
-			// 2. 创建DatagramPacket，包含相应的数据信息
+			// 2. 创建DatagramPacket，包含响应的数据信息
 			DatagramPacket responsePacket = new DatagramPacket(responseData,
 					responseData.length, address, port);
-			// 3. 相应客户端
+			// 3. 响应客户端
 			datagramSocket.send(responsePacket);
 
 			// 关闭资源

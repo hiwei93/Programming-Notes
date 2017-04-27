@@ -28,7 +28,7 @@ public class UDPClient {
 			DatagramPacket datagramPacket = new DatagramPacket(data, data.length, address, port);
 			// 3. 创建DatagramSocket对象
 			DatagramSocket datagramSocket = new DatagramSocket();
-			// 4. 箱服务器端发送数据报
+			// 4. 向服务器端发送数据报
 			datagramSocket.send(datagramPacket);
 			
 			/**

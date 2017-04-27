@@ -145,12 +145,14 @@ is.close();
 2. 创建DatagramPacket
 3. 接收客户端发送的数据信息
 4. 读取数据
+![Alt text](./JavaSocket-5.png)
 
 **客户端**
 1. 定义发送信息
 2. 创建DatagramSocket包含发送的信息；
 3. 创建DatagramSocket
 4. 发送数据
+![Alt text](./JavaSocket-6.png)
 
 #### 4. 注意问题
 1. 多线程的优先级

@@ -250,7 +250,7 @@ catch (Exception e) {
 
 ## 3. 执行调用
 ### 1. 构建SqlSessionFactory
-``` xml
+``` java
 String resource = "org/xx/config/mybatis-config.xml";
 InputStream inputStream = Resources.getResourceAsStream(resource);
 SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
@@ -260,14 +260,14 @@ SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(input
 >  SqlSessionFactory 的最佳作用域是应用作用域。有很多方法可以做到，最简单的就是使用单例模式或者静态单例模式。
 
 ### 2. 获取SqlSession
-```
+``` java
 SqlSession session = sqlSessionFactory.openSession();
 ```
 > SqlSession 的实例不是线程安全的，因此是不能被共享的，所以它的最佳的作用域是请求或方法作用域。
 > 绝对不能将 SqlSession 实例的引用放在一个类的静态域，甚至一个类的实例变量也不行。
 
 ### 3. 执行操作（增删改查）
-```
+``` java
 try {
   UserDao uDao = session.getMapper(UserDao.class);
   List<User> users = uDao.selectAllUsers();
@@ -275,12 +275,12 @@ try {
 ```
 
 ### 4. 提交事务
-```
+``` java
   session.commit();
 ```
 
 ### 5. 关闭事务
-```
+``` java
 } finally {
   session.close();
 }

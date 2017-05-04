@@ -71,6 +71,7 @@ Connection.rollback();
 - Entity.hbm.xml：映射文件
 
 ## 1. 配置数据库连接信息
+hibernate.cfg.xml
 ``` xml
 <hibernate-configuration>
 <session-factory>
@@ -185,7 +186,7 @@ Transaction.commit();
 session.close();
 ```
 
-> 执行操作的完整例子
+> 执行操作的完整例子：
 ``` java
 Session session = factory.openSession();
 Transaction tx = null;
@@ -206,6 +207,14 @@ catch (Exception e) {
 
 # 三、MyBatis
 > [官方文档](http://www.mybatis.org/mybatis-3/)
+
+**主要的类：**
+- SqlSessionFactory
+- SqlSession 
+
+**主要的配置文件：**
+- mybatis-config.xml：主配置文件
+- EntityDao.xml：XML映射文件
 
 ## 1. 主配置文件：mybatis-config.xml
 配置数据库连接信息和映射文件（包含了 SQL 代码和映射定义信息）

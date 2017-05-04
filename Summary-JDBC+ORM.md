@@ -58,6 +58,8 @@ Connection.rollback();
 ```
 
 # 二、Hibernate
+> [官方文档](http://hibernate.org/orm/documentation/5.2/)
+
 **主要的类：**
 - SessionFactory 
 - Session
@@ -112,16 +114,23 @@ Connection.rollback();
 		</property>
 		<!-- 或者 -->
 		<property name="firstName" column="first_name" type="string"/>
-		
-		<!-- 配置一对多关联关系 -->
-		<!-- many一方的信息 -->
-		<set name="" table="">
-			<!-- 外键 -->
-			<key column="gid"></key>
-			<one-to-many class=""/>
-		</set>
 	</class>
 </hibernate-mapping>
+```
+
+1. 一对多映射
+``` xml
+    <set name="" cascade="delete" inverse="true">
+		<key column=""></key>
+		<one-to-many class=""/>
+	</set>
+```
+- cascadee：外键的级联关系；
+- inverse：true放弃一对多的外键维护能力。
+
+2. 多对一
+``` xml
+<many-to-one name="" class="" column=""></many-to-one>
 ```
 
 ## 4. 将影射文件配置到主配置文件
@@ -194,3 +203,86 @@ catch (Exception e) {
 }
 ```
 > Session引发异常则回滚。
+
+# 三、MyBatis
+> [官方文档](http://www.mybatis.org/mybatis-3/)
+
+##1. 主配置文件：mybatis-config.xml
+配置数据库连接信息和映射文件（包含了 SQL 代码和映射定义信息）
+``` xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+  <!-- 事务管理和连接池的配置 -->
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+	<!-- mapper 映射器 -->
+    <mapper resource="org/xx/config/sqlxml/EntityDao.xml"/>
+  </mappers>
+</configuration>
+```
+
+## 2. XML映射文件：EntityDao.xml
+``` xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.xx.dao.EntityDao">
+  <select id="" resultType="">
+  </select>
+</mapper>
+```
+
+## 3. 执行调用
+### 1. 构建SqlSessionFactory
+``` xml
+String resource = "org/xx/config/mybatis-config.xml";
+InputStream inputStream = Resources.getResourceAsStream(resource);
+SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+```
+> SqlSessionFactory 一旦被创建就应该在应用的运行期间一直存在，没有任何理由对它进行清除或重建。
+> 使用 SqlSessionFactory 的最佳实践是在应用运行期间不要重复创建多次，多次重建 SqlSessionFactory 被视为一种代码“坏味道（bad smell）”。
+>  SqlSessionFactory 的最佳作用域是应用作用域。有很多方法可以做到，最简单的就是使用单例模式或者静态单例模式。
+
+### 2. 获取SqlSession
+```
+SqlSession session = sqlSessionFactory.openSession();
+```
+> SqlSession 的实例不是线程安全的，因此是不能被共享的，所以它的最佳的作用域是请求或方法作用域。
+> 绝对不能将 SqlSession 实例的引用放在一个类的静态域，甚至一个类的实例变量也不行。
+
+### 3. 执行操作（增删改查）
+```
+try {
+  UserDao uDao = session.getMapper(UserDao.class);
+  List<User> users = uDao.selectAllUsers();
+  ... ...
+```
+
+### 4. 提交事务
+```
+  session.commit();
+```
+
+### 5. 关闭事务
+```
+} finally {
+  session.close();
+}
+```
+> 关闭操作是很重要的，应该把关闭操作放到 finally 块中以确保每次都能执行关闭

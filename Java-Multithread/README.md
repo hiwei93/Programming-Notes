@@ -244,12 +244,12 @@ executorService.shutdown();
 
 1. 调用submit(Callable<T> task)方法执行Callable
 ``` java
-Future<String> future = executorService.execute(new CallableTast());
+Future<String> future = executorService.submit(new CallableTast());
 ```
 > CallableTast需要实现`Callable<T>`接口
 
 2. Future对象
--  Future 表示异步计算的结果。它提供了检查计算是否完成的方法，以等待计算的完成，并获取计算的结果
+-  Future 表示异步计算的结果。它提供了检查计算是否完成的方法，以等待计算的完成，并获取计算的结果；
 - Future.isDone()：判断Future是否完成了返回；
 - Future.get()：获取返回值
 

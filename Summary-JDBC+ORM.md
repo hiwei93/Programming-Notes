@@ -133,7 +133,7 @@ Connection.rollback();
 <many-to-one name="" class="" column=""></many-to-one>
 ```
 
-## 4. 将影射文件配置到主配置文件
+## 4. 将映射文件配置到主配置文件
 hibernate.cfg.xml
 ``` xml
 <mapping resource="com/entity/Entity.hbm.xml" />
@@ -185,7 +185,7 @@ Transaction.commit();
 session.close();
 ```
 
-> 完整的例子：
+> 执行操作的完整例子
 ``` java
 Session session = factory.openSession();
 Transaction tx = null;
@@ -196,18 +196,18 @@ try {
    tx.commit();
 }
 catch (Exception e) {
+   // Session引发异常则回滚
    if (tx!=null) tx.rollback();
    e.printStackTrace(); 
 }finally {
    session.close();
 }
 ```
-> Session引发异常则回滚。
 
 # 三、MyBatis
 > [官方文档](http://www.mybatis.org/mybatis-3/)
 
-##1. 主配置文件：mybatis-config.xml
+## 1. 主配置文件：mybatis-config.xml
 配置数据库连接信息和映射文件（包含了 SQL 代码和映射定义信息）
 ``` xml
 <?xml version="1.0" encoding="UTF-8" ?>

@@ -148,7 +148,7 @@ hibernate.cfg.xml
 			.configure() // configures settings from hibernate.cfg.xml
 			.build();
 	try {
-		sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
+		SessionFactory sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
 	}
 	catch (Exception e) {
 		// The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
@@ -160,7 +160,7 @@ hibernate.cfg.xml
 
 ## 6. 打开会话
 ``` java
-Session session = factory.openSession();
+Session session = sessionFactory.openSession();
 ```
 
 ## 7. 开启事务

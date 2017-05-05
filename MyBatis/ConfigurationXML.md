@@ -1,4 +1,4 @@
-# MyBatis映射配置文件
+# MyBatis配置文件
 > [官方文档](http://www.mybatis.org/mybatis-3/zh/configuration.html)
 
 [TOC]
@@ -13,7 +13,7 @@ XML文档约束
 
 ## 1. 根节点 `<configuration></configuration>`
 
-## 2. properties
+## 2. properties 属性
 ### 1. 引入外部配置文件
 ``` xml
 <properties resource="org/xx/config/config.properties">
@@ -59,7 +59,7 @@ MyBatis 3.4.2之后的版本支持
 </dataSource>
 ```
 
-## 3. settings
+## 3. settings 设置
 这是 MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为
 常用的几个setting：
 - useColumnLabel：使用列标签代替列名。不同的驱动在这方面会有不同的表现， 具体可参考相关驱动文档或通过测试这两种不同的模式来观察所用驱动的结果，默认为true。
@@ -73,7 +73,7 @@ MyBatis 3.4.2之后的版本支持
 </setting>
 ```
 
-## 4. typeAliases
+## 4. typeAliases 类型别名
 用来减少类完全限定名的冗余
 ### 1. 设置类型别名
 ``` xml
@@ -91,19 +91,17 @@ MyBatis 会在包名下面搜索需要的 Java Bean
 </typeAliases
 ```
 
-## 5. typeHandlers
-类型处理器，可以重写类型处理器或创建你自己的类型处理器来处理不支持的或非标准的类型。
+## 5. typeHandlers 类型处理器
+可以重写类型处理器或创建你自己的类型处理器来处理不支持的或非标准的类型。
 1. 实现 org.apache.ibatis.type.TypeHandler 接口， 或继承一个很便利的类 org.apache.ibatis.type.BaseTypeHandler。
 2. 选择性地将它映射到一个 JDBC 类型。
 > 具体操作请看[MyBatis官方文档](http://www.mybatis.org/mybatis-3/zh/configuration.html)
 
-## 6. objectFactory
-对象工厂
+## 6. objectFactory 对象工厂
 
-## 7. plugins
-插件
+## 7. plugins 插件
 
-## 8. environments
+## 8. environments 环境
 ``` xml
 <environments default="development">
   <environment id="development">
@@ -151,7 +149,7 @@ SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(reader, environ
 
 3. JNDI– 这个数据源的实现是为了能在如 EJB 或应用服务器这类容器中使用，容器可以集中或在外部配置数据源，然后放置一个 JNDI 上下文的引用。
 
-## 9. databaseIdProvider
+## 9. databaseIdProvider 数据库厂商标识
 MyBatis 可以根据不同的数据库厂商执行不同的语句，这种多厂商的支持是基于映射语句中的 databaseId 属性。
 ``` xml
 <databaseIdProvider type="DB_VENDOR">
@@ -161,7 +159,7 @@ MyBatis 可以根据不同的数据库厂商执行不同的语句，这种多厂
 </databaseIdProvider>
 ```
 
-## 10. mappers
+## 10. mappers 映射器
 映射器
 配置映射文件路径
 ``` xml
@@ -173,6 +171,6 @@ MyBatis 可以根据不同的数据库厂商执行不同的语句，这种多厂
   <mapper url="file:org/xx/config/mappers/AuthorMapper.xml"/>
 
   <!-- Register all interfaces in a package as mappers -->
-  <package name="org.xx.config.mappers"/>
+  <package name="org/xx/config/mappers"/>
 </mappers>
 ```

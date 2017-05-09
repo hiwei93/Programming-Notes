@@ -95,11 +95,15 @@ MyBatis 会在包名下面搜索需要的 Java Bean
 可以重写类型处理器或创建你自己的类型处理器来处理不支持的或非标准的类型。
 1. 实现 org.apache.ibatis.type.TypeHandler 接口， 或继承一个很便利的类 org.apache.ibatis.type.BaseTypeHandler。
 2. 选择性地将它映射到一个 JDBC 类型。
-> 具体操作请看[MyBatis官方文档](http://www.mybatis.org/mybatis-3/zh/configuration.html)
+> 具体操作请看[MyBatis官方文档：typeHandlers](http://www.mybatis.org/mybatis-3/zh/configuration.html#typeHandlers)
 
 ## 6. objectFactory 对象工厂
+用于配置自定义对象工厂
+> 具体操作请看[MyBatis官方文档：objectFactory](http://www.mybatis.org/mybatis-3/zh/configuration.html#objectFactory)
 
 ## 7. plugins 插件
+用于配置作为插件的拦截器的
+> 具体操作请看[MyBatis官方文档：plugins](http://www.mybatis.org/mybatis-3/zh/configuration.html#plugins)
 
 ## 8. environments 环境
 ``` xml
@@ -121,7 +125,7 @@ MyBatis 会在包名下面搜索需要的 Java Bean
 2. 创建SqlSessionFactory可以指定使用哪种环境下的配置，如不设置则为默认环境
 ``` java
 SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(reader, environment);
-SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(reader, environment,properties);
+SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(reader, environment, properties);
 ```
 
 ### 1. transactionManager：事务管理器
@@ -132,7 +136,7 @@ SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(reader, environ
 > 使用 Spring + MyBatis，则没有必要配置事务管理器， 因为 Spring 模块会使用自带的管理器来覆盖前面的配置。
 
 ### 2. dataSource：数据源
-有三种内建的数据源类型（也就是 type=”[UNPOOLED|POOLED|JNDI]”）：
+有三种内建的数据源类型（也就是 `type=”[UNPOOLED|POOLED|JNDI]”`）：
 1. UNPOOLED：这个数据源的实现只是每次被请求时打开和关闭连接。虽然一点慢，它对在及时可用连接方面没有性能要求的简单应用程序是一个很好的选择。 不同的数据库在这方面表现也是不一样的，所以对某些数据库来说使用连接池并不重要，这个配置也是理想的。UNPOOLED 类型的数据源仅仅需要配置以下 5 种属性：
 - driver：这是 JDBC 驱动的 Java 类的完全限定名（并不是JDBC驱动中可能包含的数据源类）。
 - url：这是数据库的 JDBC URL 地址。
@@ -141,13 +145,13 @@ SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(reader, environ
 - defaultTransactionIsolationLevel：默认的连接事务隔离级别。
 
 > 作为可选项，你也可以传递属性给数据库驱动。要这样做，属性的前缀为“driver.”，例如：driver.encoding=UTF8
-> 这将通过DriverManager.getConnection(url,driverProperties)方法传递值为 UTF8 的 encoding 属性给数据库驱动。
+> 这将通过`DriverManager.getConnection(url,driverProperties)`方法传递值为 UTF8 的 encoding 属性给数据库驱动。
 
-2. POOLED– 这种数据源的实现利用“池”的概念将 JDBC 连接对象组织起来，避免了创建新的连接实例时所必需的初始化和认证时间。 这是一种使得并发 Web 应用快速响应请求的流行处理方式。
+2. POOLED：这种数据源的实现利用“池”的概念将 JDBC 连接对象组织起来，避免了创建新的连接实例时所必需的初始化和认证时间。 这是一种使得并发 Web 应用快速响应请求的流行处理方式。
 除了上述提到 UNPOOLED 下的属性外，会有更多属性用来配置 POOLED 的数据源。
-> 具体操作请看[MyBatis官方文档](http://www.mybatis.org/mybatis-3/zh/configuration.html)
+> 具体操作请看[MyBatis官方文档](http://www.mybatis.org/mybatis-3/zh/configuration.html#environments)
 
-3. JNDI– 这个数据源的实现是为了能在如 EJB 或应用服务器这类容器中使用，容器可以集中或在外部配置数据源，然后放置一个 JNDI 上下文的引用。
+3. JNDI：这个数据源的实现是为了能在如 EJB 或应用服务器这类容器中使用，容器可以集中或在外部配置数据源，然后放置一个 JNDI 上下文的引用。
 
 ## 9. databaseIdProvider 数据库厂商标识
 MyBatis 可以根据不同的数据库厂商执行不同的语句，这种多厂商的支持是基于映射语句中的 databaseId 属性。

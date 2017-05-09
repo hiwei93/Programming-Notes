@@ -148,7 +148,7 @@ hibernate.cfg.xml
 			.configure() // configures settings from hibernate.cfg.xml
 			.build();
 	try {
-		SessionFactory sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
+		sessionFactory sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
 	}
 	catch (Exception e) {
 		// The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
@@ -255,6 +255,29 @@ catch (Exception e) {
   <select id="" resultType="">
   </select>
 </mapper>
+```
+
+1. 多对一
+``` xml
+<resultMap id="" type="">
+	... ...
+	<association property="author" column="blog_author_id" javaType="Author">
+	  <id property="id" column="author_id"/>
+	  <result property="username" column="author_username"/>
+	</association>
+</resultMap>
+```
+
+2. 一对多
+``` xml
+<resultMap id="" type="">
+	... ...
+	<collection property="posts" ofType="domain.blog.Post">
+	  <id property="id" column="post_id"/>
+	  <result property="subject" column="post_subject"/>
+	  <result property="body" column="post_body"/>
+	</collection>
+</resultMap>
 ```
 
 ## 3. 执行调用

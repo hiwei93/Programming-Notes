@@ -67,11 +67,27 @@ net stop mongodb
 "C:\Program Files\MongoDB\Server\3.2\bin\mongod.exe" --remove
 ```
 
+## 5. 配置环境变量*
+通过配置环境变量，使用命令提示符操作MongoDB将会变得更加方便。
+### 1. 进入系统控制面板
+我的电脑（此电脑）右键，选择属性：
+![系统信息](./mongoDBInstall-7.PNG)
+
+### 2. 进入系统属性
+选择高级系统设置，在**高级**标签页内选择环境变量：
+![Alt text](./mongoDBInstall-8.PNG)
+
+### 3. 设置环境变量
+找到变量为**path**的变量，将MongoDB的bin目录的全路径添加到path变量。
+![Alt text](./mongoDBInstall-9.PNG)
+
+点击确定即可。
+
 ---------
 这样就完成32位系统的MongoDB的安装，现在你可以通过运行客户端`C:\Program Files\MongoDB\Server\3.2\bin\mongo.exe`或者通过你编写的程序操作MongoDB数据库了。
 
 
-## 5. 错误处理
+## 6. 错误处理
 启动MongoDB的服务时，报错：
 ![Alt text](./mongoDBInstall-6.PNG)
 并在日志中出现：
@@ -89,7 +105,7 @@ exception in initAndListen: 28663 Cannot start server. The default storage engin
 "C:\Program Files\MongoDB\Server\3.2\bin\mongod.exe" --config "D:\MongoDB\mongod.cfg" --install --storageEngine=mmapv1
 ```
 
-## 6. MongoDB文件结构
+## 7. MongoDB文件结构
 | 组件       | 文件名  |
 | :-------- | :-------- |
 | 服务              | mongod.exe                |

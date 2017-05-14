@@ -53,8 +53,8 @@ mongoimport --db test --collection restaurants --drop --file ~/downloads/primer-
 - --file：导入数据文件所在地址；
 > 还可以通过`--host`和`--port`指定不同的主机和端口。
 
-## 三、MongoDB Shell (mongod)
-mongo shell是一个互动的JavaScript界面，是MongoDB然简报的组件。可以使用mongo shell来查询和更新数据以及进行管理操作。
+## 三、MongoDB Shell (mongo)
+mongo shell是一个互动的JavaScript界面，是MongoDB包的组件。可以使用mongo shell来查询和更新数据以及进行管理操作。
 
 **启动mongo**
 使用`mongo`指令，或是运行`mongo.exe`
@@ -95,7 +95,7 @@ db.collectionName.find()
 ``` javascript
 db.restaurants.find( { "borough": "Manhattan" } )
 ```
-将查询`borough`字段为`Manhattan`的document
+将查询`borough`字段值为`Manhattan`的document
 
 2. 通过嵌入式文档中的字段查找
 需要使用点表示法，点表示法需要用引号将整个点符号名字段标识出来：
@@ -105,7 +105,7 @@ db.restaurants.find( { "address.zipcode": "10075" } )
 
 3. 通过数组中的字段查找
 需要使用点表示法
-```
+``` javascript
 db.restaurants.find( { "grades.grade": "B" } )
 ```
 

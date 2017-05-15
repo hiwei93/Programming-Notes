@@ -5,14 +5,21 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static com.mongodb.client.model.Accumulators.*;
+import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Sorts.*;
+import static com.mongodb.client.model.Updates.*;
 
 /**
  * Created by wei11 on 2017/5/14.
@@ -77,13 +84,8 @@ public class MongoDBSimpleUes {
 
     // 通过查询过滤器获得Document集合
     public void getAllDocumentsByFilter() {
-        Block<Document> printBlock = new Block<Document>() {
-            public void apply(Document document) {
-                System.out.println(document.toJson());
-            }
-        };
-
-        collection.find(and(gt("i", 50), lte("i", 100))).forEach(printBlock);
+        collection.find(and(gt("i", 50), lte("i", 100)))
+                .forEach(getDocumentBlock());
     }
 
     // Document排序
@@ -96,5 +98,53 @@ public class MongoDBSimpleUes {
     public void projectingFields(){
         Document document = collection.find().projection(exclude("_id")).first();
         System.out.println(document.toJson());
+    }
+
+    // 聚合操作
+    public void aggregateOperation() {
+        collection.aggregate(Arrays.asList(
+                match(gt("i", 0)),
+                project(Document.parse("{ITimes10: {$multiply: ['$i', 10]}}")))
+        ).forEach(getDocumentBlock());
+    }
+
+    // 聚合操作分组求和
+    public void aggregateGroupsAndSum() {
+//        collection.aggregate(Arrays.asList(group(null, sum("total", "$i")))).forEach(getDocumentBlock());
+        Document document = collection.aggregate(Collections.singletonList(group(null, sum("total", "$i")))).first();
+        System.out.println(document.toJson());
+    }
+
+    // 最多更新一个Document
+    public void singleUpdate() {
+        collection.updateOne(eq("i", 10), set("i", 110));
+    }
+
+    // 更新多个Document
+    public void multiUpdate() {
+        UpdateResult updateResult = collection.updateMany(lt("i", 100), inc("i", 100));
+        System.out.println("update document number: " + updateResult.getMatchedCount());
+    }
+
+    // 最多删除一个Document
+    public void singleDelete() {
+        collection.deleteOne(eq("i", 110));
+    }
+
+    // 删除多个Document
+    public void multiDelete() {
+        DeleteResult deleteResult = collection.deleteMany(gte("i", 110));
+        System.out.println("delete document number: " + deleteResult.getDeletedCount());
+    }
+
+    // foreach方法要使用的用于打印查询结果的Block
+    public Block<Document> getDocumentBlock() {
+        Block<Document> printBlock = new Block<Document>() {
+            public void apply(Document document) {
+                System.out.println(document.toJson());
+            }
+        };
+
+        return printBlock;
     }
 }

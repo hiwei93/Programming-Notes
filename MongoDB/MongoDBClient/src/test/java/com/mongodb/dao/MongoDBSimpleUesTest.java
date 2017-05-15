@@ -9,6 +9,44 @@ import static org.junit.Assert.*;
  */
 public class MongoDBSimpleUesTest {
     @Test
+    public void singleDelete() throws Exception {
+        MongoDBSimpleUes simpleUes = new MongoDBSimpleUes();
+        simpleUes.singleDelete();
+        simpleUes.allDocument();
+    }
+
+    @Test
+    public void multiDelete() throws Exception {
+        MongoDBSimpleUes simpleUes = new MongoDBSimpleUes();
+        simpleUes.multiDelete();
+        simpleUes.allDocument();
+    }
+
+    @Test
+    public void singleUpdate() throws Exception {
+        MongoDBSimpleUes simpleUes = new MongoDBSimpleUes();
+        simpleUes.singleUpdate();
+        simpleUes.allDocument();
+    }
+
+    @Test
+    public void multiUpdate() throws Exception {
+        MongoDBSimpleUes simpleUes = new MongoDBSimpleUes();
+        simpleUes.multiUpdate();
+        simpleUes.allDocument();
+    }
+
+    @Test
+    public void aggregateGroupsAndSum() throws Exception {
+        new MongoDBSimpleUes().aggregateGroupsAndSum();
+    }
+
+    @Test
+    public void aggregateOperation() throws Exception {
+        new MongoDBSimpleUes().aggregateOperation();
+    }
+
+    @Test
     public void projectingFields() throws Exception {
         new MongoDBSimpleUes().projectingFields();
     }

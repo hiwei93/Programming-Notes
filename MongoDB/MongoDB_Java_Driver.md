@@ -167,6 +167,8 @@ collection.find(and(gt("i", 50), lte("i", 100))).forEach(printBlock);
 
 ### 4. Document排序
 ``` java
+import static com.mongodb.client.model.Sorts.*;
+
 myDoc = collection.find(exists("i")).sort(descending("i")).first();
 System.out.println(myDoc.toJson());
 ```
@@ -176,7 +178,89 @@ System.out.println(myDoc.toJson());
 ### 5. Projecting fields
 有时候不需要Document中所有的数据，可以使用Projections类使projection parameter对应字段不显示。
 ``` java
+import static com.mongodb.client.model.Projections.*;
+
 myDoc = collection.find().projection(excludeId()).first();
 System.out.println(myDoc.toJson());
 ```
 - excludeId：不包含ID字段。
+
+### 6. 聚合
+Aggregates helper为每种类型的聚合阶段提供了构建器。
+下面的例子用来计算i*10的值:
+``` java
+collection.aggregate(Arrays.asList(
+        match(gt("i", 0)),
+        project(Document.parse("{ITimes10: {$multiply: ['$i', 10]}}")))
+).forEach(printBlock);
+```
+- Aggregates.match()：匹配i大于0的document；
+-  $multiply ：将两数相乘，并返回结果数组。
+
+$group操作使用Accumulators helper进行任何累积操作，比如累加操作：
+``` java
+myDoc = collection.aggregate(Collections.singletonList(group(null, sum("total", "$i")))).first();
+System.out.println(myDoc.toJson());
+```
+
+### 7. 更新Document
+#### 1. 最多更新一个Document
+``` java
+collection.updateOne(eq("i", 10), set("i", 110));
+```
+
+#### 2. 更新多个Document
+``` java
+UpdateResult updateResult = collection.updateMany(lt("i", 100), inc("i", 100));
+System.out.println(updateResult.getModifiedCount());
+```
+- Updates.inc：未指定字段的值增加固定的值；
+- UpdateResult：提供操作的相关信息，包括更新Document的数量。
+
+### 8. 删除Document
+#### 1. 最多删除一个Document
+``` java
+collection.deleteOne(eq("i", 110));
+```
+#### 2. 删除多个Document
+``` java
+DeleteResult deleteResult = collection.deleteMany(gte("i", 100));
+System.out.println(deleteResult.getDeletedCount());
+```
+- DeleteResult：提供操作的相关信息，包括删除Document的数量。
+
+### 9. 批量操作（Bulk operations）
+新命令允许执行批量插入/更新/删除操作。
+批量操作有两种类型：
+1. 有序批量操作
+循序执行所有操作，首次出现写入错误时输出错误；
+``` java
+// 1. Ordered bulk operation - order is guarenteed
+collection.bulkWrite(
+  Arrays.asList(new InsertOneModel<>(new Document("_id", 4)),
+                new InsertOneModel<>(new Document("_id", 5)),
+                new InsertOneModel<>(new Document("_id", 6)),
+                new UpdateOneModel<>(new Document("_id", 1),
+                                     new Document("$set", new Document("x", 2))),
+                new DeleteOneModel<>(new Document("_id", 2)),
+                new ReplaceOneModel<>(new Document("_id", 3),
+                                      new Document("_id", 3).append("x", 4))));
+```
+
+2. 无序批量操作
+执行所有操作并报告任何错误。
+``` java
+ // 2. Unordered bulk operation - no guarantee of order of operation
+collection.bulkWrite(
+  Arrays.asList(new InsertOneModel<>(new Document("_id", 4)),
+                new InsertOneModel<>(new Document("_id", 5)),
+                new InsertOneModel<>(new Document("_id", 6)),
+                new UpdateOneModel<>(new Document("_id", 1),
+                                     new Document("$set", new Document("x", 2))),
+                new DeleteOneModel<>(new Document("_id", 2)),
+                new ReplaceOneModel<>(new Document("_id", 3),
+                                      new Document("_id", 3).append("x", 4))),
+  new BulkWriteOptions().ordered(false));
+```
+
+> 对于使用2.6以前的版本，不建议使用`bulkWrite`方法，因为这是首个版本，该版本允许驱动为BulkWriteResult和BulkWriteException实现正确语义的方式来支持增删改批量写入的命令。这些方法仍然适用于2.6之前的服务器，但因为每次写操作必须一次执行一次，性能将受到影响。

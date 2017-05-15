@@ -285,7 +285,7 @@ db.restaurants.aggregate(
 db.restaurants.aggregate(
    [
      { $match: { "borough": "Queens", "cuisine": "Brazilian" } },
-     { $group: { "_id": "$address.zipcode" , "count": { $sum: 2} } }
+     { $group: { "_id": "$address.zipcode" , "count": { $sum: 1} } }
    ]
 );
 ```

@@ -1,6 +1,7 @@
 # MongoDB Java Driver
 > [官方文档](http://mongodb.github.io/mongo-java-driver/3.2/driver/)
 
+# Quick Tour
 ## 1. 导入驱动
 ### 1. MongoDB Driver
 MongoDB Drivers是同步更新的Java驱动，该驱动包含原来的API以及新的通用的MongoCollection接口，该接口符合新的交叉驱动的CRUD规范。
@@ -264,3 +265,111 @@ collection.bulkWrite(
 ```
 
 > 对于使用2.6以前的版本，不建议使用`bulkWrite`方法，因为这是首个版本，该版本允许驱动为BulkWriteResult和BulkWriteException实现正确语义的方式来支持增删改批量写入的命令。这些方法仍然适用于2.6之前的服务器，但因为每次写操作必须一次执行一次，性能将受到影响。
+
+# [MongoDB Driver Admin Quick Tour](http://mongodb.github.io/mongo-java-driver/3.2/driver/getting-started/quick-tour-admin/)
+## 1. Setup
+获取连接并创建mongoClient, database和collection变量：
+``` java
+MongoClient mongoClient = new MongoClient();
+MongoDatabase database = mongoClient.getDatabase("Database Name");
+MongoCollection<Document> collection = database.getCollection("Collection Name");
+```
+> 调用MongoClient的`getDatabase()`方法不会创建数据库，只有写入操作时才创建数据库。
+
+## 2. 数据库管理
+### 1. 获取数据库列表
+MongoClient的`listDatabaseNames()`方法：
+``` java
+for (String name: mongoClient.listDatabaseNames()) {
+    System.out.println(name);
+}
+```
+
+### 2. 删除数据库
+``` java
+mongoClient.getDatabase("databaseToBeDropped").drop();
+```
+
+## 3. Collection管理
+### 1. 新建一个Collection
+向Collection插入一个Document时，MongoDB会自动创建这个Collection。
+也可以使用MongoDatabase的`createCollection()`方法，显示创建集合，这样可以自定义配置。
+``` java
+database.createCollection("cappedCollection",
+  new CreateCollectionOptions().capped(true).sizeInBytes(0x100000));
+```
+创建了一个大小为1兆字节的封顶(capped) Collection。
+
+### 2. 获取Collection列表
+``` java
+for (String name : database.listCollectionNames()) {
+    System.out.println(name);
+}
+```
+
+### 3. 删除Collection
+``` java
+collection.drop();
+```
+
+### 4. 索引管理
+#### 1. 创建索引
+MongoDB支持二级索引。
+创建一个索引需要指定字段或组合字段，还要为每个字段指定缩影方向（升序/降序）
+``` java
+// create an ascending index on the "i" field
+ collection.createIndex(Indexes.ascending("i"));
+```
+
+#### 2. 获取Collection的索引列表
+``` java
+for (final Document index : collection.listIndexes()) {
+    System.out.println(index.toJson());
+}
+```
+
+#### 3. 文本索引
+MongoDB提供了的文本索引，用于支持字符串内容的文本搜索。
+文本索引可以包含所有值为字符串或者一个字符串数组的字段。
+``` java
+// create a text index on the "content" field
+collection.createIndex(Indexes.text("content"));
+```
+
+2.6版本以后，文本索引整合到了主查询语句中，默认情况下启用
+``` java
+// Insert some documents
+collection.insertOne(new Document("_id", 0).append("content", "textual content"));
+collection.insertOne(new Document("_id", 1).append("content", "additional content"));
+collection.insertOne(new Document("_id", 2).append("content", "irrelevant content"));
+
+// Find using the text index
+long matchCount = collection.count(Filters.text("textual content -irrelevant"));
+System.out.println("Text search matches: " + matchCount);
+
+// Find using the $language operator
+Bson textSearch = Filters.text("textual content -irrelevant", new TextSearchOptions().language("english"));
+matchCount = collection.count(textSearch);
+System.out.println("Text search matches (english): " + matchCount);
+
+// Find the highest scoring match
+Document projection = new Document("score", new Document("$meta", "textScore"));
+Document myDoc = collection.find(textSearch).projection(projection).first();
+System.out.println("Highest scoring document: " + myDoc.toJson());
+```
+- text方法中所有的符号都将视为分隔符，除了`-`（表否定）和转义字符`\"`（指定一个短语）；
+- $meta：关键字为textScore，返回文档与搜索字符串的相似程度。
+
+输出位：
+``` java
+Text search matches: 2
+Text search matches (english): 2
+Highest scoring document: { "_id" : 1, "content" : "additional content", "score" : 0.75 }
+```
+
+## 4. 运行命令
+``` java
+Document buildInfo = database.runCommand(new Document("buildInfo", 1));
+System.out.println(buildInfo);
+```
+执行buildInfo命令，buildInfo命令是一个管理命令，它返回当前mongod的构建摘要。

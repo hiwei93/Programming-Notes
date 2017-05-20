@@ -5,7 +5,7 @@
 > ArrayList、HashSet、HashMap使用频率高；
 
 ## 二、 Collection接口
-### 1. List接口奇迹实现类——ArrayList
+### 1. List接口及其实现类——ArrayList
 - List集合中元素有序可重复，成为序列；
 - List可以精确定位元素位置；
 - ArrayList称为数组序列，是List的一个重要实现类；
@@ -33,7 +33,7 @@ while(it.hasNext()) {
 - list.remove()/list.removeAll()：移除元素；
 
 3. 集合泛型
-- 泛型集合中，不可添加泛型规定的类型及其子类型意外的对象；
+- 泛型集合中，不可添加泛型规定的类型及其子类型以外的对象；
 - 泛型集合不可以使用基本类型，如int,long,double，如有需要要使用对用包装类；
 ``` java
 List<Object> list = new ArrayList<Object>();
@@ -56,7 +56,7 @@ List<Object> list = new ArrayList<Object>();
 - map.remove(key)：移除元素；
 - map.keySet()：返回key的Set集合；
 - map.values()：返回value的集合；
-- map.entrySet()：返回银蛇关系的Set集合
+- map.entrySet()：返回映射关系的Set集合
 
 ### 2. HashMap类
 - HashMap是Map的一个常用的重要实现类，基于哈希表实现；
@@ -81,7 +81,7 @@ Map containsKey();
 - sort(List<>);
 > 列表中的元素必须实现Comparable接口。
 
-### 2. Comparable&Comparator
+### 2. Comparable&Comparator接口
 - Comparable：默认比较规则；
 - Comparator：临时比较规则；
 

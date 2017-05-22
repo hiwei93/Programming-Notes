@@ -88,10 +88,14 @@ Map containsKey();
 1. Comparable接口——可比较的
 - 实现该接口表示：该类的实例可以比较大小，可以惊醒自然排序；
 - 第一默认的比较规则；
-- 实现类虚实线compareTo()方法；
+- 实现类需实现compareTo()方法；
+- 使用Collections.sort(List)即可使用默认的comparaTo()比较方法。
 
 2. Comparator接口——比较工具接口
 - 用于定义临时比较规则，而不是默认比较规则；
 - 实现类需要实现compare()方法；
+- 使用compare()临时比较方法需要在Collections.sort(List, Comparator)，传入comparator实例。
 
-#### [集合框架进阶](http://blog.csdn.net/q547550831/article/details/49516199#)
+
+## 参考阅读
+1.  [Java集合框架 ](http://blog.csdn.net/q547550831/article/details/49516199#)

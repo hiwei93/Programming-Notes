@@ -34,6 +34,45 @@
 |   Map     | HashMap  |  -  |  TreeMap  |   -    |  LinkedHashMap  |
 > 说明：Queue还有一个通用实现为PriorityQueue，是基于Priority Heap实现的
 
+### 4. 算法
+- 算法都封装在Collections类中，且这些算法都是静态的；
+- 这些算法大多数都用于处理List实例，少部分可以用于任意Collection实例。
+
+#### 1. 排序（sorting）
+- `Collections.sort(sort(List<T> list) );` —— 根据元素的自然顺序 对指定列表按升序进行排序。
+- `Collections.sort(List<T> list, Comparator<? super T> c)` —— 根据指定比较器产生的顺序对指定列表进行排序。 
+
+> sort()方法使用的是优化过的归并排序（merge sort）
+
+#### 2. 重置排列（Shuffling）
+- `shuffle(List<?> list)` —— 使用默认随机源对指定列表进行置换。
+- `shuffle(List<?> list, Random rnd)` —— 使用指定的随机源对指定列表进行置换。
+
+> shuffle()方法常用于机会游戏，如纸牌游戏。
+
+#### 3. 常见数据操作
+Collections类提供了五个List的常见数据操作：
+1. `reverse(List<?> list) ` ——  反转指定列表中元素的顺序。
+2. `fill(List<? super T> list, T obj) ` —— 使用指定元素替换指定列表中的所有元素。（对于重新初始化List很有用）
+3. `copy(List<? super T> dest, List<? extends T> src)` —— 将所有元素从一个列表复制到另一个列表。
+4. `swap(List<?> list, int i, int j) ` —— 在指定列表的指定位置处交换元素。
+5. `addAll(Collection<? super T> c, T... elements) ` —— 将所有指定元素添加到指定 collection 中。
+
+#### 4. 搜索（Searching）
+- `binarySearch(List<? extends Comparable<? super T>> list, T key) ` —— 使用二分搜索法搜索指定列表，以获得指定对象。（该方法假定List中按照元素的自然排序规则自然排序）
+- `binarySearch(List<? extends T> list, T key, Comparator<? super T> c)` —— 使用二分搜索法搜索指定列表，以获得指定对象。
+
+> 可以在调用binarySearch()方法之前先调用sort()方法。
+
+#### 5. 组成特点（Composition）
+测试一个或多个Collections组成的一些特点：
+- `frequency(Collection<?> c, Object o)` —— 返回指定 collection 中等于指定对象的元素数。
+- `disjoint(Collection<?> c1, Collection<?> c2)` —— 如果两个指定 collection 中没有相同的元素，则返回 true。
+
+#### 6. 极限值（Extreme Value）
+- `max/min(Collection<? extends T> coll) `—— 根据元素的自然顺序，返回给定 collection 的最大元素/最小元素
+- `max/min(Collection<? extends T> coll, Comparator<? super T> comp)` —— 根据指定比较器产生的顺序，返回给定 collection 的最大元素/最小元素。
+
 ## 三、各实现类的对比
 ### 1. ArrayList和Vector
 **相同点**
@@ -49,7 +88,7 @@
 > 如果只有一个线程访问集合，最好是使用 ArrayList，因为它不考虑线程安全，效率会高些；如果有多个线程访问集合，最好是使用 Vector，因为不需要我们自己再去考虑和编写线程安全的代码。
 
 #### 2. 数据增长
-Arrayl和Vector默认初始大小均为10，都提供了可以设置初始空间的构造函数。当元素个数查过容量使就会增加多个存储单元，每次增加的存储单元的个数在内存空间利用与程
+Arraylist和Vector默认初始大小均为10，都提供了可以设置初始空间的构造函数。当元素个数查过容量使就会增加多个存储单元，每次增加的存储单元的个数在内存空间利用与程
 序效率之间要取得一定的平衡。
 - Vector默认增长为原来容量的两倍，用户可以自定义增长的空间大小；
 - ArrayList默认增长为原来容量的0.5倍，用户无法自定义。
@@ -88,4 +127,5 @@ Arrayl和Vector默认初始大小均为10，都提供了可以设置初始空间
 1. List和Set有一个共同的父接口Collection，存储的都是单列数据：
 - Set是无序集合，不能有重复元素。Set 集合的add 方法有一个 boolean 的返回值，当集合中没有某个元素，此时 add 方法可成功加入该元素时，则返回 true，当集合含有与某个元素 equals 相等的元素时，此时 add 方法无法加入该元素，返回结果为 false。 Set 取元素时，没法说取第几个，只能以 Iterator 接口取得所有的元素，再逐一遍历各个元素。
 - List是有序集合，有序是指具有先后顺序，可以用add()方法将指定的元素添加到列表的尾部，也可以将元素插入到指定位置。List 除了可以以 Iterator 接口取得所有的元素，再逐一遍历各个元素之外，还可以调用 get(index i)来明确说明取第几个。
+
 2. Map与List、Set不同，Map是双列数据的集合，用put()方法存储数据，每次都要存储一对key/value，key不可以重复。可以用get()方法根据key找到对应的value，可以获取全部的key集（map.keySet()）或者全部的value集（map.values()），也可以获得 key 和 value 组合成的 Entry 对象（map.entrySet()）

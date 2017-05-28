@@ -6,10 +6,12 @@
 - ResultSet 
 - SQLException
 
-## 1. 导入对引发数据库的JDBC包
+## 1. 导入对应数据库的JDBC包
+如MySQL数据库的JDBC包：[mysql-connector-java.jar](https://dev.mysql.com/downloads/connector/j/)
+
 ## 2. 注册JDBC驱动
 ``` java
-Class.forName("com.mysql.jdbc.Driver");
+Class.forName("com.mysql.jdbc.Driver").newInstance();
 ```
 ## 3. 连接数据库
 DriverManager类开启一个连接
@@ -74,23 +76,23 @@ Connection.rollback();
 hibernate.cfg.xml
 ``` xml
 <hibernate-configuration>
-<session-factory>
-	<!-- 数据库方言 -->
-	<property name="hibernate.dialect">
-		org.hibernate.dialect.MySQLDialect
-	</property>
-	<!-- 驱动类 -->
-	<property name="hibernate.connection.driver_class">
-		com.mysql.jdbc.Driver
-	</property>
-	<property name="hibernate.connection.username">root</property>
-	<property name="hibernate.connection.password">root</property>
-	<property name="hibernate.connection.url">
-		<![CDATA[
-        		jdbc:mysql://localhost:3306/imooc?useUnicode=true&characterEncoding=utf8
-        	]]>
-	</property>
-</session-factory>
+	<session-factory>
+		<!-- 数据库方言 -->
+		<property name="hibernate.dialect">
+			org.hibernate.dialect.MySQLDialect
+		</property>
+		<!-- 驱动类 -->
+		<property name="hibernate.connection.driver_class">
+			com.mysql.jdbc.Driver
+		</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password">root</property>
+		<property name="hibernate.connection.url">
+			<![CDATA[
+	        		jdbc:mysql://localhost:3306/imooc?useUnicode=true&characterEncoding=utf8
+	        	]]>
+		</property>
+	</session-factory>
 </hibernate-configuration>
 ```
 
@@ -126,7 +128,7 @@ hibernate.cfg.xml
 		<one-to-many class=""/>
 	</set>
 ```
-- cascadee：外键的级联关系；
+- cascade：外键的级联关系；
 - inverse：true放弃一对多的外键维护能力。
 
 2. 多对一
@@ -148,7 +150,7 @@ hibernate.cfg.xml
 			.configure() // configures settings from hibernate.cfg.xml
 			.build();
 	try {
-		sessionFactory sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
+		SessionFactory sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
 	}
 	catch (Exception e) {
 		// The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory

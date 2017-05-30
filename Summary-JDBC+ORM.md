@@ -1,340 +1,322 @@
-# SSH框架整合
-## 一、SSH知识点回顾
-1. web层-->Struts2
-2. 业务层-->Spring
-3. 持久层-->Hibernate
+# 一、JDBC
+主要的类：
+- DriverManager
+- Connection 
+- Statement 
+- ResultSet 
+- SQLException
 
-## 二、SSH环境搭建
-### 1. 引入相关jar包
-1. Struts2框架开发的相应的jar：（基本开发jar包）
-- apps-->struts2-blank.war下的jar包；
-- 了解的jar包：
-- 1. srtuts2-convention-plugin-2.3.15.3.jar：struts2的注解开发jar包（按需）；
-- 2. struts2-spring-plugin-2.3.15.3.jar：Struts2用于整合Spring的jar包。
+## 1. 导入对应数据库的JDBC包
+如MySQL数据库的JDBC包：[mysql-connector-java.jar](https://dev.mysql.com/downloads/connector/j/)
 
-2. Hibernate 框架开发的相应的jar：（Hibernate3）
-- hibernate-distribution-3.6.10.Final\hibernate3.jar
-- hibernate-distribution-3.6.10.Final\lib\required\*.jar
--  hibernate-distribution-3.6.10.Final\lib\jpa\*.jar
--  slf4j-log4j12-1.7.5.jar：日志记录，slf4j整合log4j的jar包
--  数据库驱动包：mysql-connector-java-5.1.25-bin.jar
-
-3. Spring框架开发的相应的jar：
-**基本开发jar包（IOC所需）：**
-- spring-beans-3.2.5.RELEASE.jar
-- spring-context-3.2.5.RELEASE.jar
-- spring-core-3.2.5.RELEASE.jar
-- spring-expression-3.2.5.RELEASE.jar
-- com.springsource.org.apache.log4j-1.2.15.jar：log4j 日志记录
-- com.springsource.org.apache.commons.logging-1.1.1.jar：整合其他日志系统
-
-**AOP所需：**
-- spring-aop-3.2.5.RELEASE.jar
-- spring-aspects-3.2.5.RELEASE.jar
-- com.springsource.org.aopalliance-1.0.0.jar
-- com.springsource.org.aspectj.weaver-1.6.8.RELEASE.jar
-
-**其他：**
-- spring-tx-3.2.5.RELEASE.jar：事务管理
-- spring-jdbc-3.2.5.RELEASE.jar
-- spring-orm-3.2.5.RELEASE.jar：整合Hibernate
-- spring-web-3.2.5.RELEASE.jar：整合web项目
-- spring-test-3.2.5.RELEASE.jar：整合jUnit
-- com.springsource.com.mchange.v2.c3p0-0.9.1.2.jar：连接池
-
-### 2. 引入相应配置文件
-#### 1. Struts2框架的配置文件
-web.xml
-``` xml
-  <!-- Struts2框架的核心过滤器 -->
-  <filter>
-    <filter-name>struts2</filter-name>
-    <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>struts2</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-```
-struts.xml
-
-#### 2. Hibernate框架的配置文件
-- hibernate.cfg.xml（该项目中可以省略）
-- 数据库表映射文件
-
-#### 3. Spring配置文件
-web.xml
-``` xml
-  <!-- Spring 框架的核心监听器 -->
-  <listener>
-  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
-  
-  <context-param>
-  	<param-name>contextConfigLocation</param-name>
-  	<!-- 指向编译路径下的src，即.class文件目录的src下 -->
-  	<param-value>classpath:applicationContext.xml</param-value>
-  </context-param>
-```
-applicationContext.xml
-spring全部约束：
-``` xml
-<?xml version="1.0" encoding="utf-8"?>
-
-<beans xmlns="http://www.springframework.org/schema/beans"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:context="http://www.springframework.org/schema/context"
-        xmlns:aop="http://www.springframework.org/schema/aop"
-        xmlns:tx="http://www.springframework.org/schema/tx"
-        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx.xsd">
-</beans>
-```
-
-#### 4. 其他配置文件
-log4j.properties
-
-### 3. 创建包结构
-com.ssh
-- action
-- service
-- dao
-- entity
-
-## 三、Struts2整合Spring
-### 1. 创建页面
-addProduct.jsp
-``` xml
-<%@ taglib uri="/struts-tags" prefix="s" %>
-<h1>保存商品的页面</h1>
-	<s:form action="product_save" method="post" namespace="/" theme="simple">
-		<table border="1" width="400">
-			<tr>
-				<td>商品名称</td>
-				<td><s:textfield name="pname"></s:textfield></td>
-			</tr>
-			<tr>
-				<td>商品价格</td>
-				<td><s:textfield name="price"></s:textfield></td>
-			</tr>
-			<tr>
-				<td colspan="2"><input type="submit" value="添加"/></td>
-			</tr>
-		</table>
-	</s:form>
-```
-
-### 2. 编写Action、Service和DAO
-#### 1. Service层注入DAO层
-productService.java
+## 2. 注册JDBC驱动
 ``` java
-public class ProductService {	
-	// 业务层注入DAO类
-	private ProductDao productDao;
-	public void setProductDao(ProductDao productDao) {
-		this.productDao = productDao;
-	}
-}
+Class.forName("com.mysql.jdbc.Driver").newInstance();
 ```
-> 提供set方法即可注入；
-
-#### 2. Action层注入Service层
-productAction.java
+## 3. 连接数据库
+DriverManager类开启一个连接
 ``` java
-public class ProductAction extends ActionSupport implements ModelDriven<Product>{
-	// 模型驱动使用的类
-	private Product product = new Product();
-	@Override
-	public Product getModel() {
-		return product;
-	}
-	
-	// Struts2和Spring整合过程中按名称自动注入的业务层类
-	private ProductService productService;
-	public void setProductService(ProductService productService) {
-		this.productService = productService;
-	}
-}
+Connection conn = DriverManager.getConnection(url,username,password);
 ```
-> 模型驱动必须要实例化，即必须new！
-
-### 3. 配置Action、Service和DAO
-Service和DAO交给Spring管理：applicationContext.xml
-``` xml
-	<!-- 配置业务层的类 -->
-	<bean id="productService" class="com.wei.service.ProductService">
-		<property name="productDao" ref="productDao"></property>
-	</bean>
-	
-	<!-- 配置DAO的类 -->
-	<bean id="productDao" class="com.wei.dao.ProductDao">
-	</bean>
+## 4. 执行SQL语句
+1. Connection类创建一个Statement类
+``` java
+Statement stmt = conn.createStatement();
 ```
 
-Struts2和Spring整合的两种方式：
-1. Action的类有Struts2自身来创建：struts.xml
-``` xml
-<struts>
-    <package name="ssh" namespace="/" extends="struts-default">
-		<action name="product_*" class="com.ssh.action.ProductAction" method="{1}">
-			
-		</action>
-    </package>
-</struts>
-```
-> 此处action的class属性填写类的全路径
+2. 编写SQL语句
 
-2. Action的类交给Spring来创建
-applicationContext.xml
-``` xml
-	<!-- 配置Action的类 -->
-	<bean id="productAction" class="com.wei.action.ProductAction" scope="prototype">
-		<!-- 手动注入Service -->
-		<property name="productService" ref="productService"></property>
-	</bean>
+3. Statement的executeQuery()方法执行SQL语句
+``` java
+stmt.executeQuery(sql);
 ```
 
-struts.xml
-``` xml
-<struts>
-    <package name="ssh" namespace="/" extends="struts-default">
-		<action name="product_*" class="productAction" method="{1}">
-			
-		</action>
-    </package>
-</struts>
+## 5. 接受返回结果
+ResultSet类接受SQL执行返回结果
+``` java
+ResultSet rs = stmt.executeQuery(sql);
+while(rs.next()){ ... ... }
 ```
-> 1. 此处action的class属性填写类在applicationContext.xml配置的id名；
-> 2. Spring创建action是单例的，要配置属性scope="prototype"。
 
-## 四、Spring整合Hibernate
-### 1. 创建数据库
+## 6. 关闭连接
+``` java
+ResultSet.close();
+Statement.close();
+Connection.close();
+```
 
-### 2. 创建表与实体的映射文件
-在hibernate-mapping-3.0.dtd中获取 Hibernate约束
-Product.hbm.xml
+## 7. 事务
+1. 关闭自动提交
+``` java
+Connection.setAutoCommit(false);
+```
+2. 完成相关数据操作后，手动提交
+``` java
+Connection.commit();
+```
+3. commit报错后可在catch块儿中进行回滚
+``` java
+Connection.rollback();
+```
+
+# 二、Hibernate
+> [官方文档](http://hibernate.org/orm/documentation/5.2/)
+
+**主要的类：**
+- SessionFactory 
+- Session
+- Transaction 
+- Query /SQLQuery
+
+**主要的配置文件：**
+- hibernate.cfg.xml：主配置文件
+- Entity.hbm.xml：映射文件
+
+## 1. 配置数据库连接信息
+hibernate.cfg.xml
 ``` xml
+<hibernate-configuration>
+	<session-factory>
+		<!-- 数据库方言 -->
+		<property name="hibernate.dialect">
+			org.hibernate.dialect.MySQLDialect
+		</property>
+		<!-- 驱动类 -->
+		<property name="hibernate.connection.driver_class">
+			com.mysql.jdbc.Driver
+		</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password">root</property>
+		<property name="hibernate.connection.url">
+			<![CDATA[
+	        		jdbc:mysql://localhost:3306/imooc?useUnicode=true&characterEncoding=utf8
+	        	]]>
+		</property>
+	</session-factory>
+</hibernate-configuration>
+```
+
+## 2. 创建持久化类 （POJO类）
+
+## 3. 配置映射文件
+将数据库和POJO类一一对应
+``` xml
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="com.wei.domain.Product" table="product">
-		<id name="pid" column="pid">
+	<class name="com.entity.XX" table="XX">
+		<!-- 主键 -->
+		<id name="" column="" type="">
 			<generator class="native"></generator>
 		</id>
 		
-		<property name="pname" column="pname" length="20"></property>
-		<property name="price" column="price"></property>
+		<property name="" type="">
+			<column name="" length="" not-null=""></column>
+		</property>
+		<!-- 或者 -->
+		<property name="firstName" column="first_name" type="string"/>
 	</class>
 </hibernate-mapping>
 ```
 
-### 3. Spring整合Hibernate
-#### 1. 配置数据库连接参数
-jdbc.properties
+1. 一对多映射
+``` xml
+    <set name="" cascade="delete" inverse="true">
+		<key column=""></key>
+		<one-to-many class=""/>
+	</set>
 ```
-jdbc.driverClass=com.mysql.jdbc.Driver
-jdbc.url=jdbc:mysql://localhost:3306/ssh
-jdbc.username=root
-jdbc.password=root
+- cascade：外键的级联关系；
+- inverse：true放弃一对多的外键维护能力。
+
+2. 多对一
+``` xml
+<many-to-one name="" class="" column=""></many-to-one>
 ```
 
-#### 2. 配置连接池：applicationContext.xml
+## 4. 将映射文件配置到主配置文件
+hibernate.cfg.xml
 ``` xml
-	<!-- 引入外部属性文件 -->
-	<context:property-placeholder location="classpath:jdbc.properties"/>
-	
-	<!-- 配置c3p0连接池 -->
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-		<property name="driverClass" value="${jdbc.driverClass}"></property>
-		<property name="jdbcUrl" value="${jdbc.url}"></property>
-		<property name="user" value="${jdbc.username}"></property>
-		<property name="password" value="${jdbc.password}"></property>
-	</bean>
+<mapping resource="com/entity/Entity.hbm.xml" />
 ```
 
-#### 3. 配置Hibernate相关属性：applicationContext.xml
-``` xml
-<!-- 配置Hibernate相关属性 -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-		<!-- 注入连接池 -->
-		<property name="dataSource" ref="dataSource"></property>
-		<!-- 配置Hibernate属性 -->
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.format_sql">true</prop>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
-			</props>
-		</property>
-		<!-- 加载Hibernate中的映射文件 -->
-		<property name="mappingResources">
-			<list>
-				<value>com/wei/domain/Product.hbm.xml</value>
-			</list>
-		</property>
-	</bean>
-```
-
-#### 4. 编写DAO
-使用Hibernate模板
-注入sessionFactory：applicationContext.xml
-``` xml
-	<!-- 配置DAO的类 -->
-	<bean id="productDao" class="com.wei.dao.ProductDao">
-		<property name="sessionFactory" ref="sessionFactory"></property>
-	</bean>
-```
-ProductDao.java
-``` java
-public class ProductDao extends HibernateDaoSupport{
-	public void save(Product product) {
-		this.getHibernateTemplate().save(product);
+## 5. 创建SessionFactory
+``` java 
+	Configuration config = new Configuration().configure();
+	// A SessionFactory is set up once for an application!
+	final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+			.configure() // configures settings from hibernate.cfg.xml
+			.build();
+	try {
+		SessionFactory sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
+	}
+	catch (Exception e) {
+		// The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
+		// so destroy it manually.
+		StandardServiceRegistryBuilder.destroy( registry );
 	}
 }
 ```
-> DAO层需要继承HibernateDaoSupport类；
 
-> 注：Hibernate4之后的版本将不再支持HibernateTemplate，则Dao类需要如下：
-``` xml
-public class ProductDaoImpl implements ProductDao {
-
-    private SessionFactory sessionFactory;
-
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    public Collection loadProductsByCategory(String category) {
-        return this.sessionFactory.getCurrentSession()
-                .createQuery("from test.Product product where product.category=?")
-                .setParameter(0, category)
-                .list();
-    }
-}
-```
-
-#### 5. 事务管理
-1. 配置事务管理器：applicationContext.xml
-``` xml
-	<!-- 配置事务管理器 -->
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactory"></property>
-	</bean>
-```
-2. 开启注解事务：applicationContext.xml
-```  xml
-	<!-- 开启注解事务 -->
-	<tx:annotation-driven transaction-manager="transactionManager"/>
-```
-3. 在事务管理的类（即业务层）上添加注解@Transactional
-ProductService.java
+## 6. 打开会话
 ``` java
-@Transactional
-public class ProductService {
+Session session = sessionFactory.openSession();
+```
+
+## 7. 开启事务
+``` java
+Transaction tx = session.beginTransaction();
+```
+
+## 8. 数据操作
+``` java
+session.get();
+session.save();
+session.update();
+session.delete();
+```
+
+## 9. 提交事务
+``` java
+Transaction.commit();
+```
+
+## 10. 关闭会话
+``` java
+session.close();
+```
+
+> 执行操作的完整例子：
+``` java
+Session session = factory.openSession();
+Transaction tx = null;
+try {
+   tx = session.beginTransaction();
+   // do some work
+   ...
+   tx.commit();
+}
+catch (Exception e) {
+   // Session引发异常则回滚
+   if (tx!=null) tx.rollback();
+   e.printStackTrace(); 
+}finally {
+   session.close();
 }
 ```
+
+# 三、MyBatis
+> [官方文档](http://www.mybatis.org/mybatis-3/)
+
+**主要的类：**
+- SqlSessionFactory
+- SqlSession 
+
+**主要的配置文件：**
+- mybatis-config.xml：主配置文件
+- EntityDao.xml：XML映射文件
+
+## 1. 主配置文件：mybatis-config.xml
+配置数据库连接信息和映射文件（包含了 SQL 代码和映射定义信息）
+``` xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+  <!-- 事务管理和连接池的配置 -->
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+	<!-- mapper 映射器 -->
+    <mapper resource="org/xx/config/sqlxml/EntityDao.xml"/>
+  </mappers>
+</configuration>
+```
+
+## 2. XML映射文件：EntityDao.xml
+``` xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.xx.dao.EntityDao">
+  <select id="" resultType="">
+  </select>
+</mapper>
+```
+
+1. 多对一
+``` xml
+<resultMap id="" type="">
+	... ...
+	<association property="author" column="blog_author_id" javaType="Author">
+	  <id property="id" column="author_id"/>
+	  <result property="username" column="author_username"/>
+	</association>
+</resultMap>
+```
+
+2. 一对多
+``` xml
+<resultMap id="" type="">
+	... ...
+	<collection property="posts" ofType="domain.blog.Post">
+	  <id property="id" column="post_id"/>
+	  <result property="subject" column="post_subject"/>
+	  <result property="body" column="post_body"/>
+	</collection>
+</resultMap>
+```
+
+## 3. 执行调用
+### 1. 构建SqlSessionFactory
+``` java
+String resource = "org/xx/config/mybatis-config.xml";
+InputStream inputStream = Resources.getResourceAsStream(resource);
+SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+```
+> SqlSessionFactory 一旦被创建就应该在应用的运行期间一直存在，没有任何理由对它进行清除或重建。
+> 使用 SqlSessionFactory 的最佳实践是在应用运行期间不要重复创建多次，多次重建 SqlSessionFactory 被视为一种代码“坏味道（bad smell）”。
+>  SqlSessionFactory 的最佳作用域是应用作用域。有很多方法可以做到，最简单的就是使用单例模式或者静态单例模式。
+
+### 2. 获取SqlSession
+``` java
+SqlSession session = sqlSessionFactory.openSession();
+```
+> SqlSession 的实例不是线程安全的，因此是不能被共享的，所以它的最佳的作用域是请求或方法作用域。
+> 绝对不能将 SqlSession 实例的引用放在一个类的静态域，甚至一个类的实例变量也不行。
+
+### 3. 执行操作（增删改查）
+``` java
+try {
+  UserDao uDao = session.getMapper(UserDao.class);
+  List<User> users = uDao.selectAllUsers();
+  ... ...
+```
+
+### 4. 提交事务
+``` java
+  session.commit();
+```
+
+### 5. 关闭事务
+``` java
+} finally {
+  session.close();
+}
+```
+> 关闭操作是很重要的，应该把关闭操作放到 finally 块中以确保每次都能执行关闭

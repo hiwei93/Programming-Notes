@@ -9,12 +9,14 @@ public class testReadFile {
 		
 		ArrangeWords arrangeWords = new ArrangeWords();
 		String soucesDirectory = "resource//sourceSrc";
+		
+		arrangeWords.Initialize();
+		
 		File file = new File(soucesDirectory);
 		if(file.exists() && file.isDirectory()){
 			arrangeWords.arrange(file);
-			arrangeWords.rangeWordsFiles();
+			arrangeWords.arrangeWordsFiles();
 		}
-		
 	}
 
 }

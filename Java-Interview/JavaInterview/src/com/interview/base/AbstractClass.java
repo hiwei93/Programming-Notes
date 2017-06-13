@@ -1,26 +1,24 @@
 package com.interview.base;
 
-abstract class AbstractClass {
+/**
+ * 抽象类
+ */
+abstract class Animal {
 	
-	abstract void run();
-	
-	public void test(String something) {
-		System.out.println("there have something " + something);
+	public void saySomething() {
+		System.out.println("I can be any kind of animal!");
 	}
 
 }
 
-class saySomething extends AbstractClass {
+/**
+ * 实现类
+ */
+class Cat extends Animal {
 
 	@Override
-	void run() {
-		// TODO Auto-generated method stub
-		
+	public void saySomething() {
+		System.out.println("I can be a cat!");
 	}
-	
-	@Override
-	public void test(String something) {
-		// TODO Auto-generated method stub
-		System.out.println("override something!");
-	}
+
 }

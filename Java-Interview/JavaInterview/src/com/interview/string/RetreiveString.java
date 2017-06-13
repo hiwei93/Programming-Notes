@@ -8,6 +8,16 @@ public class RetreiveString {
 	 * 3. 如果没找到则返回-1，b为空字符串则返回0；
 	 */
 	
+	/**
+	 * 检索子串的方法：
+	 * 1. 对输入进行检测，判断是否为空，并检测特殊字符串"";
+	 * 2. - 逐个查找子字符串的字符在主串的位置，并统计找到字符的个数；
+	 *     - 判断找到的的字符个数是否与子串长度相同；
+	 *     - 相同则返回子串首个字符在主串中的索引位置，不同则返回-1
+	 * @param main
+	 * @param find
+	 * @return
+	 */
 	public int findStringIndex(String main, String find) {
 		
 		// 输入检测
@@ -28,7 +38,7 @@ public class RetreiveString {
 			for (int j = position; j < main.length(); j++) {
 				if (find.charAt(i) == main.charAt(j)) {
 					offset++;
-					position = j;
+					position = j + 1;
 					isFind = true;
 					break;
 				} else {
@@ -36,6 +46,6 @@ public class RetreiveString {
 				}
 			}
 		}
-		return offset == find.length() ? position - offset + 1 : -1;
+		return offset == find.length() ? position - offset : -1;
 	}
 }
